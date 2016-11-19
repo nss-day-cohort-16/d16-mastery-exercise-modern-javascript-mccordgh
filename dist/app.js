@@ -1,41 +1,131 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
-let DomObj = {
-	fight(player1, player2){
-		console.log(player1);
-		console.log(player2);
-	}
-};
-
-module.exports = DomObj;
-},{}],2:[function(require,module,exports){
-"use strict";
+let roundCounter = 0,
+		p1MaxHP = 666,
+		p2MaxHP = 666,
+		interval;
 
 let Robots = require('./Robot.js'),
-		BG = require('./DOM.js'),
 		$ = require('jquery'),
 		Player1 = new Robots.Player(),
 		Player2 = new Robots.Player();
 
-
 $(function(){
 
-	Player1.setType("WallE");
-	Player2.setType("Johnny5");
+	$('#pressStartBtn').click((event) => {
+		if (evalUserInput()) {
+			arenaSetup();
+			interval = window.setInterval(fight, 500);
+		} else {
+			alert(('Please enter a name and choose a robot type for Player1 and Player2').toUpperCase());
+		}
+	});
 
-	Player1.setName("matty buuuu");
-	Player2.setName("surfin stevens");
-
-	console.log("Player1", Player1);
-	console.log("Player2", Player2);
 });
-},{"./DOM.js":1,"./Robot.js":3,"jquery":5}],3:[function(require,module,exports){
+
+function arenaSetup(){
+	
+	let p1Name = $('#txtP1Name').val();
+	let p2Name = $('#txtP2Name').val();
+	let p1Type = $('#p1Select').val();
+	let p2Type = $('#p2Select').val();
+
+	Player1.setName(p1Name);
+	Player2.setName(p2Name);
+	Player1.setType(p1Type);
+	Player2.setType(p2Type);
+
+	$('#player1Info').html(Player1.toString());
+	$('#player2Info').html(Player2.toString());
+	
+	$('#player1Image').attr('src', Player1.type.url);
+	$('#player2Image').attr('src', Player2.type.url);
+
+	p1MaxHP = Player1.type.health;
+	p2MaxHP = Player2.type.health;
+	$('#Player1Info h1').html(Player1.playerName);
+	$('#Player2Info h1').html(Player2.playerName);
+	$('#Player1Health hp').html(`${Player1.type.health} / ${p1MaxHP}`);
+	$('#Player2Health hp').html(`${Player2.type.health} / ${p2MaxHP}`);
+
+	$('#playerSetup').addClass('hidden');
+	$('#startFooter').addClass('hidden');
+
+	randomizeBG();
+	$('#battleArena').removeClass('hidden');
+}
+
+function evalUserInput(){
+	let p1Name = $('#txtP1Name').val();
+	let p2Name = $('#txtP2Name').val();
+	let p1Type = $('#p1Select').val();
+	let p2Type = $('#p2Select').val();
+
+	if (p1Name !== "" && p2Name !== "" && p1Type !== null && p2Type !== null) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function fight(){
+	roundCounter++;
+	battleLog(`<h2>ROUND ${roundCounter} ~~~~~~~~~~~~~~~~~</h2>`);
+	attacks(Player1, Player2);
+	attacks(Player2, Player1);
+	updateHealth();
+	let winner = "";
+
+	if (Player1.type.health < 1 && Player2.type.health < 1){
+		winner = `<h1>DRAW!!</h1><h1>${Player1.playerName} and ${Player2.playerName} have both been defeated!!`;
+	} else if (Player1.type.health < 1 && Player2.type.health > 0){
+		winner = `<h1>VICTORY!!</h1><h1>${Player2.playerName} has defeated ${Player1.playerName} with ${Player2.type.skill}!!</h1>`;
+	} else if (Player2.type.health < 1 && Player1.type.health > 0){
+		winner = `<h1>VICTORY!!</h1><h1>${Player1.playerName} has defeated ${Player2.playerName} with ${Player1.type.skill}!!</h1>`;
+	}
+
+	if (winner !== ""){
+		window.clearInterval(interval);
+		declareWinner(winner);
+	}
+
+}
+
+function battleLog(_string){
+	$('#battleLog').html(`${$('#battleLog').html()}<h2>${_string}</h2>`);
+}
+
+function randomizeBG(){
+	let rndBG = Math.floor(Math.random() * 7) + 1;
+	let rndBGstr = `../res/backgrounds/mkbg${rndBG}.jpg`;
+	$(document.body).css('background-image', `url('${rndBGstr}')`);	
+}
+	
+function attacks(_attacker, _defender){
+	let dmg = Math.floor(Math.random() * (_attacker.type.highDamage - _attacker.type.lowDamage + 1)) + _attacker.type.lowDamage;
+	_defender.type.health -= dmg;
+	battleLog(`${_attacker.playerName} attacks ${_defender.playerName} with ${_attacker.type.skill} for ${dmg} damage!`);
+}
+
+function updateHealth(){
+	let p1Health = Player1.type.health > 0 ? Player1.type.health : 0;
+	let p2Health = Player2.type.health > 0 ? Player2.type.health : 0;
+	$('#Player1Health hp').html(`${p1Health} / ${p1MaxHP}`);
+	$('#Player2Health hp').html(`${p2Health} / ${p2MaxHP}`);
+}
+
+function declareWinner(winString){
+	$('#myModal h2').html(`${winString}<br/>`);
+	$('#btnClose').click((event) => {
+		window.location.reload();
+	});
+	$('#myModal').css('display', 'block');
+}
+},{"./Robot.js":2,"jquery":4}],2:[function(require,module,exports){
 "use strict";
 
 let RobotModels = require('./RobotModels.js');
-
-// const Names = [ "Thoror", "Hlundig", "Breuskie", "Ned Nederlander", "Lucky Day", "Dusty Bottoms", "Jack", "Mr. Holmes", "Matt", "Belve", "Nathan Majestic V, of the High Country", "Stevie"];
 
 let BattleBots = {};
 
@@ -45,7 +135,7 @@ BattleBots.Player = function(name) {
   this.playerName = "Unknown Robot";
 
   this.toString = function() {
-    let output = "generic output placeholder";
+    let output = `${this.playerName}!<br/> A brave <pop>${this.type.name}</pop><br/> fighting with: <pop>${this.type.skill}</pop>!`;
     return output;
   };
 };
@@ -58,39 +148,9 @@ BattleBots.Player.prototype.setType = function(newType) {
   this.type = new RobotModels[newType]();
 };
 
-// BattleBots.Player.prototype.setWeapon = function(newWeapon) {
-//    this.weapon = new Weapons[newWeapon]();
-// };
-
-// RANDOMIZER
-
-// BattleBots.Player.prototype.generateClass = function() {
-//   // Get a random index from the allowed classes array
-//   let classes = Object.keys(Classes);
-//   let randClsIndex = Math.floor(Math.random() * (classes.length));
-//   return classes[randClsIndex];
-// };
-
-// BattleBots.Player.prototype.generateWeapon = function() {
-//   let weapons = Object.keys(Weapons);
-//   let randWepIndex = Math.floor(Math.random() * (weapons.length));
-//   return weapons[randWepIndex];
-// };
-
-// BattleBots.Player.prototype.generateName = function() {
-//   let randNameIndex = Math.floor(Math.random() * (Names.length));
-//   return Names[randNameIndex];
-// };
-
-// BattleBots.Player.prototype.generateSpecies = function() {
-//   let species = Object.keys(Species);
-//   let randSpcIndex = Math.floor(Math.random() * (species.length));
-//   return species[randSpcIndex];
-// };
-
 module.exports = BattleBots;
 
-},{"./RobotModels.js":4}],4:[function(require,module,exports){
+},{"./RobotModels.js":3}],3:[function(require,module,exports){
 "use strict";
 
 let Models = {};
@@ -99,12 +159,9 @@ let RobotModel = function() {
   this.name = "ketchup robot";
   this.weapon = "laser";
   this.health = 9999;
-  // this.healthBonus = 0;
-  // this.strengthBonus = 0;
-  // this.intelligenceBonus = 0;
-  // this.critBonus = 0;
-  // this.magical = false;
   };
+
+// Mini Tank types
 
 let MiniTank = function(){
 	this.name = "MiniTank default";
@@ -113,24 +170,25 @@ MiniTank.prototype = new RobotModel();
 
 Models.Johnny5 = function(){
   this.health = Math.floor(Math.random() * 40 + 150);
-  this.damage = Math.floor(Math.random() * 5 + 30);
-	this.name = "Johnny5! No disassemble!!";
-	this.skill = "Robot Charisma";
+  this.lowDamage = 30;
+  this.highDamage = 40;
+	this.name = "Johnny5";
+	this.skill = "Heat Vision";
+	this.url = "../res/Johnny5.jpg";
 };
 Models.Johnny5.prototype = new MiniTank();
 
 Models.WallE = function(){
   this.health = Math.floor(Math.random() * 90 + 130);
-  this.damage = Math.floor(Math.random() * 15 + 25);
-	this.name = "Waaaaaaaaaaaaall-EEEEEEEEEEE";
-	this.skill = "Complete pitifullness in a most adoreable way";
+  this.lowDamage = 35;
+  this.highDamage = 38;
+	this.name = "Wall-E";
+	this.skill = "Adoreableness";
+	this.url = "../res/WallE.jpg";
 };
 Models.WallE.prototype = new MiniTank();
 
-
-
-
-
+// Tripod types
 
 let Tripod = function(){
 	this.name = "Tripod Default";
@@ -140,25 +198,25 @@ Tripod.prototype = new RobotModel();
 
 Models.R2D2 = function(){
   this.health = Math.floor(Math.random() * 100 + 120);
-  this.damage = Math.floor(Math.random() * 30 + 15);
+  this.lowDamage = 5;
+  this.highDamage = 80;
 	this.name = "R2D2";
-	this.skill = "BEEP BOOP BOP BEEP WHEEEERRRRREERER";
+	this.skill = "Soldering Iron";
+	this.url = '../res/R2D2.jpg';
 };
 Models.R2D2.prototype = new Tripod();
 
 Models.R2BRO2 = function(){
   this.health = Math.floor(Math.random() * 30 + 180);
-  this.damage = Math.floor(Math.random() * 50 + 10);
+  this.lowDamage = 15;
+  this.highDamage = 70;
 	this.name = "R2BRO2";
-	this.skill = "BEER BOOP BOP BEER BEEEEEEEEEEERKEGSTAND";
+	this.skill = "Keg Chuck";
+	this.url = '../res/R2BRO2.jpg';
 };
 Models.R2BRO2.prototype = new Tripod();
 
-
-
-
-
-
+// Bipedal Types
 
 let Bipedal = function(){
 	this.name = "Bipedal";
@@ -166,25 +224,29 @@ let Bipedal = function(){
 };
 Bipedal.prototype = new RobotModel();
 
-Models.C3PO = function(){
+Models.Bender = function(){
   this.health = Math.floor(Math.random() * 20 + 190);
-  this.damage = Math.floor(Math.random() * 20 + 20);
-	this.name = "C3PO";
-	this.skill = "Oh my!!";
+  this.lowDamage = 20;
+  this.highDamage = 60;
+	this.name = "Bender";
+	this.skill = "Bending";
+	this.url = '../res/Bender.jpg';
 };
-Models.C3PO.prototype = new Bipedal();
+Models.Bender.prototype = new Bipedal();
 
 Models.BayMax = function(){
   this.health = Math.floor(Math.random() * 100 + 105);
-  this.damage = Math.floor(Math.random() * 25 + 15);
-	this.name = "BayMax the Big Hero";
-	this.skill = "Tender Voice";
+  this.lowDamage = 25;
+  this.highDamage = 50;
+	this.name = "BayMax";
+	this.skill = "Anti Heal";
+	this.url = '../res/BayMax.jpg';
 };
 Models.BayMax.prototype = new Bipedal();
 
 
 module.exports = Models;
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.1.1
  * https://jquery.com/
@@ -10406,4 +10468,4 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}]},{},[2]);
+},{}]},{},[1]);
