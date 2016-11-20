@@ -8,8 +8,7 @@ let RobotModel = function() {
   this.health = 9999;
   };
 
-// Mini Tank types
-
+// Mini Tank types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let MiniTank = function(){
 	this.name = "MiniTank default";
 };
@@ -20,7 +19,7 @@ Models.Johnny5 = function(){
 	this.highHealth = 200;
 	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 30;
-  this.highDamage = 40;
+  this.highDamage = 60;
 	this.name = "Johnny5";
 	this.skill = "Heat Vision";
 	this.url = "../res/Johnny5.jpg";
@@ -39,8 +38,7 @@ Models.WallE = function(){
 };
 Models.WallE.prototype = new MiniTank();
 
-// Tripod types
-
+// Tripod types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let Tripod = function(){
 	this.name = "Tripod Default";
 	this.skill = "Tripod Default";
@@ -71,8 +69,7 @@ Models.R2BRO2 = function(){
 };
 Models.R2BRO2.prototype = new Tripod();
 
-// Bipedal Types
-
+// Bipedal Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let Bipedal = function(){
 	this.name = "Bipedal";
 	this.skill = "Mobility";
@@ -84,7 +81,7 @@ Models.Bender = function(){
 	this.highHealth = 190;
 	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 20;
-  this.highDamage = 60;
+  this.highDamage = 70;
 	this.name = "Bender";
 	this.skill = "Bending";
 	this.url = '../res/Bender.jpg';
@@ -102,6 +99,5 @@ Models.BayMax = function(){
 	this.url = '../res/BayMax.jpg';
 };
 Models.BayMax.prototype = new Bipedal();
-
 
 module.exports = Models;
