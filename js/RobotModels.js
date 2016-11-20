@@ -16,7 +16,9 @@ let MiniTank = function(){
 MiniTank.prototype = new RobotModel();
 
 Models.Johnny5 = function(){
-  this.health = Math.floor(Math.random() * 40 + 150);
+	this.lowHealth = 50;
+	this.highHealth = 200;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 30;
   this.highDamage = 40;
 	this.name = "Johnny5";
@@ -26,7 +28,9 @@ Models.Johnny5 = function(){
 Models.Johnny5.prototype = new MiniTank();
 
 Models.WallE = function(){
-  this.health = Math.floor(Math.random() * 90 + 130);
+	this.lowHealth = 100;
+	this.highHealth = 160;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 35;
   this.highDamage = 38;
 	this.name = "Wall-E";
@@ -44,7 +48,9 @@ let Tripod = function(){
 Tripod.prototype = new RobotModel();
 
 Models.R2D2 = function(){
-  this.health = Math.floor(Math.random() * 100 + 120);
+	this.lowHealth = 125;
+	this.highHealth = 160;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 5;
   this.highDamage = 80;
 	this.name = "R2D2";
@@ -54,7 +60,9 @@ Models.R2D2 = function(){
 Models.R2D2.prototype = new Tripod();
 
 Models.R2BRO2 = function(){
-  this.health = Math.floor(Math.random() * 30 + 180);
+	this.lowHealth = 80;
+	this.highHealth = 180;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 15;
   this.highDamage = 70;
 	this.name = "R2BRO2";
@@ -72,7 +80,9 @@ let Bipedal = function(){
 Bipedal.prototype = new RobotModel();
 
 Models.Bender = function(){
-  this.health = Math.floor(Math.random() * 20 + 190);
+	this.lowHealth = 70;
+	this.highHealth = 190;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 20;
   this.highDamage = 60;
 	this.name = "Bender";
@@ -82,7 +92,9 @@ Models.Bender = function(){
 Models.Bender.prototype = new Bipedal();
 
 Models.BayMax = function(){
-  this.health = Math.floor(Math.random() * 100 + 105);
+	this.lowHealth = 40;
+	this.highHealth = 230;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 25;
   this.highDamage = 50;
 	this.name = "BayMax";

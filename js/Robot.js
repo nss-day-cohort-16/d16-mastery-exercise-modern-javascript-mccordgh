@@ -5,12 +5,25 @@ let RobotModels = require('./RobotModels.js');
 let BattleBots = {};
 
 BattleBots.Player = function(name) {
-  this.type = null;
-  this.weapon = "bare hands";
-  this.playerName = "Unknown Robot";
 
   this.toString = function() {
-    let output = `${this.playerName}!<br/> A brave <pop>${this.type.name}</pop><br/> fighting with: <pop>${this.type.skill}</pop>!`;
+    let name = this.type.name;
+    let skill = this.type.skill;
+    let healthRange = `${this.type.lowHealth} - ${this.type.highHealth}`;
+    let dmgRange = `${this.type.lowDamage} - ${this.type.highDamage}`;
+
+    let output = `
+    	<hr>
+    	<h2>
+    	<popGreen>Type:</popGreen><br/>
+    	<pop>${name}</pop><br/>
+    	<popGreen>Skill:</popGreen><br/>
+    	<pop>${skill}</pop><br/>
+    	<popGreen>Health Range:</popGreen><br/>
+    	<pop>${healthRange}</pop><br/>
+    	<popGreen>Damage Range:</popGreen><br/>
+    	<pop>${dmgRange}</pop><br/>
+    	</h2>`;
     return output;
   };
 };

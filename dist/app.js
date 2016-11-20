@@ -16,53 +16,59 @@ $(function(){
 	$('#pressStartBtn').click((event) => {
 		if (evalUserInput()) {
 			arenaSetup();
-			interval = window.setInterval(fight, 500);
 		} else {
-			alert(('Please enter a name and choose a robot type for Player1 and Player2').toUpperCase());
+			alert(('Please enter a name and choose a robot type for Player1 and Player2'));
 		}
 	});
 
+	$('#p1Select').change(() => {
+		Player1.setType($('#p1Select').val());
+		$('#Player1Desc').html(Player1.toString());
+	});
+
+	$('#p2Select').change(() => {
+		Player2.setType($('#p2Select').val());
+		$('#Player2Desc').html(Player2.toString());
+	});
+
+	$('#txtP1Name').focus();
 });
 
 function arenaSetup(){
 	
-	let p1Name = $('#txtP1Name').val();
-	let p2Name = $('#txtP2Name').val();
-	let p1Type = $('#p1Select').val();
-	let p2Type = $('#p2Select').val();
+	Player1.setName($('#txtP1Name').val());
+	Player2.setName($('#txtP2Name').val());
+	Player2.setType($('#p2Select').val());
 
-	Player1.setName(p1Name);
-	Player2.setName(p2Name);
-	Player1.setType(p1Type);
-	Player2.setType(p2Type);
-
-	$('#player1Info').html(Player1.toString());
-	$('#player2Info').html(Player2.toString());
+	$('#Player1NameLi').html(`<h1>${Player1.playerName}</h1>`);
+	$('#Player2NameLi').html(`<h1>${Player2.playerName}</h1>`);
 	
 	$('#player1Image').attr('src', Player1.type.url);
 	$('#player2Image').attr('src', Player2.type.url);
 
 	p1MaxHP = Player1.type.health;
 	p2MaxHP = Player2.type.health;
-	$('#Player1Info h1').html(Player1.playerName);
-	$('#Player2Info h1').html(Player2.playerName);
+	$('#Player1Info hp').html(`${p1MaxHP} / ${p1MaxHP}`);
+	$('#Player2Info hp').html(`${p2MaxHP} / ${p2MaxHP}`);
 	$('#Player1Health hp').html(`${Player1.type.health} / ${p1MaxHP}`);
 	$('#Player2Health hp').html(`${Player2.type.health} / ${p2MaxHP}`);
+
+	document.body.setAttribute('background-size', 'cover');
 
 	$('#playerSetup').addClass('hidden');
 	$('#startFooter').addClass('hidden');
 
+	$('#attackBtn').click((event) => {
+		fight();
+	});
+
+$('#battleLog').html(`<br/><h2>~~~~~~~~~~~~~~~~~ PRESS THE <popGreen>ATTACK</popGreen> BUTTON TO BEGIN!! ~~~~~~~~~~~~~~~~~</h2>`);
 	randomizeBG();
 	$('#battleArena').removeClass('hidden');
 }
 
 function evalUserInput(){
-	let p1Name = $('#txtP1Name').val();
-	let p2Name = $('#txtP2Name').val();
-	let p1Type = $('#p1Select').val();
-	let p2Type = $('#p2Select').val();
-
-	if (p1Name !== "" && p2Name !== "" && p1Type !== null && p2Type !== null) {
+	if ($('#txtP1Name').val() !== "" && $('#txtP2Name').val() !== "" && $('#p1Select').val() !== null && $('#p2Select').val() !== null) {
 		return true;
 	} else {
 		return false;
@@ -71,51 +77,83 @@ function evalUserInput(){
 
 function fight(){
 	roundCounter++;
-	battleLog(`<h2>ROUND ${roundCounter} ~~~~~~~~~~~~~~~~~</h2>`);
 	attacks(Player1, Player2);
-	attacks(Player2, Player1);
 	updateHealth();
-	let winner = "";
+	let winnerStr = "",
+			loser = "";
 
 	if (Player1.type.health < 1 && Player2.type.health < 1){
-		winner = `<h1>DRAW!!</h1><h1>${Player1.playerName} and ${Player2.playerName} have both been defeated!!`;
+		winnerStr = `<h1>DRAW!!</h1><h1><pop>${Player1.playerName}</pop> and <pop>${Player2.playerName}</pop> have both been <popGreen>defeated</popGreen>!!`;
+		loser = 'both';
 	} else if (Player1.type.health < 1 && Player2.type.health > 0){
-		winner = `<h1>VICTORY!!</h1><h1>${Player2.playerName} has defeated ${Player1.playerName} with ${Player2.type.skill}!!</h1>`;
+		loser = "player1";
+		winnerStr = `<h1>VICTORY!!</h1><h1><pop>${Player2.playerName}</pop> has defeated <pop>${Player1.playerName}</pop> with <popGreen>${Player2.type.skill}</popGreen>!!</h1>`;
 	} else if (Player2.type.health < 1 && Player1.type.health > 0){
-		winner = `<h1>VICTORY!!</h1><h1>${Player1.playerName} has defeated ${Player2.playerName} with ${Player1.type.skill}!!</h1>`;
+		winnerStr = `<h1>VICTORY!!</h1><h1><pop>${Player1.playerName}</pop> has defeated <pop>${Player2.playerName}</pop> with <popGreen>${Player1.type.skill}</popGreen>!!</h1>`;
+		loser = "player2";
 	}
 
-	if (winner !== ""){
-		window.clearInterval(interval);
-		declareWinner(winner);
+	if (winnerStr !== ""){
+		declareWinner(winnerStr, loser);
 	}
 
-}
-
-function battleLog(_string){
-	$('#battleLog').html(`${$('#battleLog').html()}<h2>${_string}</h2>`);
 }
 
 function randomizeBG(){
 	let rndBG = Math.floor(Math.random() * 7) + 1;
 	let rndBGstr = `../res/backgrounds/mkbg${rndBG}.jpg`;
-	$(document.body).css('background-image', `url('${rndBGstr}')`);	
+	$('battleArena').css('background-image', `url('${rndBGstr}')`);	
 }
 	
 function attacks(_attacker, _defender){
-	let dmg = Math.floor(Math.random() * (_attacker.type.highDamage - _attacker.type.lowDamage + 1)) + _attacker.type.lowDamage;
-	_defender.type.health -= dmg;
-	battleLog(`${_attacker.playerName} attacks ${_defender.playerName} with ${_attacker.type.skill} for ${dmg} damage!`);
+	let dmg1 = Math.floor(Math.random() * (_attacker.type.highDamage - _attacker.type.lowDamage + 1)) + _attacker.type.lowDamage;
+	_defender.type.health -= dmg1;
+	let dmg2 = Math.floor(Math.random() * (_defender.type.highDamage - _defender.type.lowDamage + 1)) + _defender.type.lowDamage;
+	_attacker.type.health -= dmg1;
+		$('#battleLog').html(`<br/>
+			<h2>~~~~~~~~~~~~~~~~~ ROUND ${roundCounter} ~~~~~~~~~~~~~~~~~</h2>
+			<br/>
+			<h2><pop>${_defender.playerName}</pop> attacks <pop>${_attacker.playerName}</pop> with <pop>${_defender.type.skill}</pop> for <popGreen>${dmg1}</popGreen> damage!</h2>
+			<br/>
+			<h2><br/><pop>${_attacker.playerName}</pop> attacks <pop>${_defender.playerName}</pop> with <pop>${_attacker.type.skill}</pop> for <popGreen>${dmg2}</popGreen> damage!</h2>
+			<br/>
+			<h2>~~~~~~~~~~~~~~~~~ PRESS THE <popGreen>ATTACK</popGreen> BUTTON TO ATTACK AGAIN!! ~~~~~~~~~~~~~~~~~</h2>
+		`);
 }
 
 function updateHealth(){
 	let p1Health = Player1.type.health > 0 ? Player1.type.health : 0;
 	let p2Health = Player2.type.health > 0 ? Player2.type.health : 0;
-	$('#Player1Health hp').html(`${p1Health} / ${p1MaxHP}`);
-	$('#Player2Health hp').html(`${p2Health} / ${p2MaxHP}`);
+	
+	$('#Player1Info hp').html(`${p1Health} / ${p1MaxHP}`);
+	$('#Player2Info hp').html(`${p2Health} / ${p2MaxHP}`);
+
+	let hp1Percent = Math.ceil((p1Health * 100) / p1MaxHP);
+	let hp2Percent = Math.ceil((p2Health * 100) / p2MaxHP);
+
+	$('#Player1Health').css('width', `${hp1Percent}%`);
+	$('#Player2Health').css('width', `${hp2Percent}%`);
 }
 
-function declareWinner(winString){
+function declareWinner(winString, loser){
+	$('#battleLog').fadeToggle(500);
+
+	switch (loser) {
+		case 'player1':
+			$('#player2Image').removeClass('coolBorderBro').addClass('winBorderBro');
+			$('#player1Image').fadeToggle(3000);
+			break;
+		case 'player2':
+			$('#player1Image').removeClass('coolBorderBro').addClass('winBorderBro');
+			$('#player2Image').fadeToggle(3000);
+			break;
+		case 'both':
+			$('#player1Image').fadeToggle(3000);
+			$('#player2Image').fadeToggle(3000);
+			break;
+	}
+
+
 	$('#myModal h2').html(`${winString}<br/>`);
 	$('#btnClose').click((event) => {
 		window.location.reload();
@@ -130,12 +168,25 @@ let RobotModels = require('./RobotModels.js');
 let BattleBots = {};
 
 BattleBots.Player = function(name) {
-  this.type = null;
-  this.weapon = "bare hands";
-  this.playerName = "Unknown Robot";
 
   this.toString = function() {
-    let output = `${this.playerName}!<br/> A brave <pop>${this.type.name}</pop><br/> fighting with: <pop>${this.type.skill}</pop>!`;
+    let name = this.type.name;
+    let skill = this.type.skill;
+    let healthRange = `${this.type.lowHealth} - ${this.type.highHealth}`;
+    let dmgRange = `${this.type.lowDamage} - ${this.type.highDamage}`;
+
+    let output = `
+    	<hr>
+    	<h2>
+    	<popGreen>Type:</popGreen><br/>
+    	<pop>${name}</pop><br/>
+    	<popGreen>Skill:</popGreen><br/>
+    	<pop>${skill}</pop><br/>
+    	<popGreen>Health Range:</popGreen><br/>
+    	<pop>${healthRange}</pop><br/>
+    	<popGreen>Damage Range:</popGreen><br/>
+    	<pop>${dmgRange}</pop><br/>
+    	</h2>`;
     return output;
   };
 };
@@ -169,7 +220,9 @@ let MiniTank = function(){
 MiniTank.prototype = new RobotModel();
 
 Models.Johnny5 = function(){
-  this.health = Math.floor(Math.random() * 40 + 150);
+	this.lowHealth = 50;
+	this.highHealth = 200;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 30;
   this.highDamage = 40;
 	this.name = "Johnny5";
@@ -179,7 +232,9 @@ Models.Johnny5 = function(){
 Models.Johnny5.prototype = new MiniTank();
 
 Models.WallE = function(){
-  this.health = Math.floor(Math.random() * 90 + 130);
+	this.lowHealth = 100;
+	this.highHealth = 160;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 35;
   this.highDamage = 38;
 	this.name = "Wall-E";
@@ -197,7 +252,9 @@ let Tripod = function(){
 Tripod.prototype = new RobotModel();
 
 Models.R2D2 = function(){
-  this.health = Math.floor(Math.random() * 100 + 120);
+	this.lowHealth = 125;
+	this.highHealth = 160;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 5;
   this.highDamage = 80;
 	this.name = "R2D2";
@@ -207,7 +264,9 @@ Models.R2D2 = function(){
 Models.R2D2.prototype = new Tripod();
 
 Models.R2BRO2 = function(){
-  this.health = Math.floor(Math.random() * 30 + 180);
+	this.lowHealth = 80;
+	this.highHealth = 180;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 15;
   this.highDamage = 70;
 	this.name = "R2BRO2";
@@ -225,7 +284,9 @@ let Bipedal = function(){
 Bipedal.prototype = new RobotModel();
 
 Models.Bender = function(){
-  this.health = Math.floor(Math.random() * 20 + 190);
+	this.lowHealth = 70;
+	this.highHealth = 190;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 20;
   this.highDamage = 60;
 	this.name = "Bender";
@@ -235,7 +296,9 @@ Models.Bender = function(){
 Models.Bender.prototype = new Bipedal();
 
 Models.BayMax = function(){
-  this.health = Math.floor(Math.random() * 100 + 105);
+	this.lowHealth = 40;
+	this.highHealth = 230;
+	this.health = Math.floor(Math.random() * (this.highHealth - this.lowHealth + 1)) + this.lowHealth;
   this.lowDamage = 25;
   this.highDamage = 50;
 	this.name = "BayMax";

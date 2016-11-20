@@ -11,11 +11,11 @@
 	<!-- WRAPPER FOR EVERYTHING PLAYER SETUP -->
 	<div id='playerSetup' class='container col-md-12'>
 
-		<div class="col-md-2 pull-left coolBorderBro playerCard">
+		<div class="col-md-2 coolBorderBro playerCard">
 			<h1>PLAYER 1:</h1>
 			<h2>Enter Robot Name:</h2>
-			<input id="txtP1Name">
-			<p>Select Robot Type</p>
+			<input id="txtP1Name" placeholder="Enter Player1 Name">
+			<h2>Select Robot Type</h2>
 			<select id="p1Select">
 				<option disabled selected="">Select Robot Type:</option>
 				<option disabled>---------------------------------</option>
@@ -34,13 +34,24 @@
 				<option value="Bender">Bender</option>
 				<option value="BayMax">BayMax</option>
 			</select>
+			<div id='Player1Desc' class='playerDescription'>
+	    	<hr/>
+	    	<h2>
+	    	<pop>Please Choose a</pop><br/>
+	    	<popGreen>Robot Type</popGreen>
+	    	</h2>
+		</div>
 		</div>
 
-		<div class="col-md-2 col-md-offset-8 pull-right coolBorderBro playerCard">
+		<div class='coolBorderBro col-md-6 col-md-offset-1' id='chooseCharacter'>
+			<img src='../res/backgrounds/MK_Character_Select.png'>
+		</div>
+
+		<div class="col-md-2 col-md-offset-1 coolBorderBro playerCard">
 			<h1>PLAYER 2:</h1>
 			<h2>Enter Robot Name:</h2>
-			<input id="txtP2Name">
-			<p>Select Robot Type</p>
+			<input id="txtP2Name" placeholder="Enter Player2 Name">
+			<h2>Select Robot Type</h2>
 			<select id="p2Select">
 				<option disabled selected="">Select Robot Type:</option>
 				<option disabled>---------------------------------</option>
@@ -59,13 +70,21 @@
 				<option value="Bender">Bender</option>
 				<option value="BayMax">BayMax</option>
 			</select>
+			<div id='Player2Desc' class='playerDescription'>
+	    	<hr/>
+	    	<h2>
+	    	<pop>Please Choose a</pop><br/>
+	    	<popGreen>Robot Type</popGreen>
+	    	</h2>
+			</div>
+
 		</div>
 
 		<!-- FOOTER FOR PRESS START BUTTON -->
 	</div>
 
-		<div class='container' id='startFooter'>
-			<div id='pressStart' class='col-md-4 col-md-offset-5'>
+		<div class='container col-md-12' id='startFooter'>
+			<div id='pressStart' class='col-md-4 col-md-offset-4'>
 				<img id='pressStartBtn' src='../res/press_start.png' class='col-md-12'>
 			</div>
 		</div>
@@ -80,23 +99,32 @@
 		<div class='container'>
 			
 			<div id='Player1Info' class='col-md-5'>
-				<h1>PLAYER 1 NAME</h1>
-				<div id="Player1Health" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100"
-	  				aria-valuemin="0" aria-valuemax="100" style="width:100%">
-					<div class="progress-bar progress-bar-success coolBorderBro" role="progressbar" aria-valuenow="70"
-	  				aria-valuemin="0" aria-valuemax="100" style="width:100%">
-	  				<hp>999/999</hp>
+				<ul>
+					<li id='Player1NameLi'>
+					</li>
+					<li>
+	  				<hp></hp>
+	  			</li>
+	  		</ul>
+				<div class='hpBackground proggy coolBorderBro'>
+					<div id="Player1Health" class="proggy progress-bar progress-bar-success" role="progressbar" aria-valuenow="100"
+	  				aria-valuemin="0" aria-valuemax="100">
 	    		</div>
 	    	</div>
 			</div>
 			
+
 			<div id='Player2Info' class='col-md-5 col-md-offset-2'>
-				<h1>PLAYER 2 NAME</h1>
-				<div id="Player2Health" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100"
-	  				aria-valuemin="0" aria-valuemax="100" style="width:100%">
-					<div class="progress-bar progress-bar-success coolBorderBro" role="progressbar" aria-valuenow="70"
-	  				aria-valuemin="0" aria-valuemax="100" style="width:100%">
-	  				<hp>999/999</hp>
+				<ul>
+					<li id='Player2NameLi'>
+					</li>
+					<li>
+	  				<hp></hp>
+	  			</li>
+	  		</ul>
+				<div class='hpBackground proggy coolBorderBro'>
+					<div id="Player2Health" class="proggy progress-bar progress-bar-success" role="progressbar" aria-valuenow="100"
+	  				aria-valuemin="0" aria-valuemax="100">
 	    		</div>
 	    	</div>
 			</div>
@@ -105,12 +133,20 @@
 
 		<!-- WRAPPER FOR PLAYER IMAGES -->
 		<div id='imageWrapper' class='col-md-12 wrapper'>
-			<div class='col-md-5'>
-				<img id="player1Image" class="playerImage">
+			
+			<div class='col-md-2 col-md-offset-2 pImageHolder'>
+				<img id="player1Image" class="playerImage coolBorderBro">
 			</div>
-			<div class='col-md-5 col-md-offset-2'>
-				<img id="player2Image" class="playerImage">
+		
+
+			<div id='attack' class='col-md-2 col-md-offset-1'>
+				<img id='attackBtn' src='../res/attack.jpg' class='col-md-12'>
 			</div>
+
+			<div class='col-md-2 col-md-offset-1 pImageHolder'>
+				<img id="player2Image" class="playerImage coolBorderBro">
+			</div>
+		
 		</div>
 
 		<!-- WRAPPER FOR BATTLE LOG -->
