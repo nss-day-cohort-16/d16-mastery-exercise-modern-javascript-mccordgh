@@ -84,11 +84,7 @@ popGreen {
   cursor: pointer;
   height: 100%; }
 
-#attack {
-  padding: 0;
-  height: 100%; }
-
-#chooseCharacter {
+.chooseCharacter {
   padding: 0;
   background-color: black;
   height: 100%;

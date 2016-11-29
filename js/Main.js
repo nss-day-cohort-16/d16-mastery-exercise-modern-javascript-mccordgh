@@ -5,13 +5,11 @@ let roundCounter = 0,
 		p2MaxHP = 666,
 		interval;
 
-//import Robots object, and jquery
+//import Robots object and jquery, and create player1 and 2
 let Robots = require('./Robot.js'),
 		$ = require('jquery'),
-
-//create player1 and 2
-Player1 = new Robots.Player(),
-Player2 = new Robots.Player();
+		Player1 = new Robots.Player(),
+		Player2 = new Robots.Player();
 
 //initial function run when document is ready
 $(function(){
